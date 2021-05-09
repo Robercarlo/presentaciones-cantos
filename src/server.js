@@ -12,11 +12,11 @@ const connectDB = async (operations, res) => {
     try {
         const mysql = require('mysql');
         const connection = mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: 'root',
-            database: 'id11191910_himnos',
-            port: '8889'
+            host: 'sql10.freemysqlhosting.net',
+            user: 'sql10411211',
+            password: '8d2mpY4LvJ',
+            database: 'sql10411211',
+            port: '3306'
         });
         connection.connect((err) => {
             if (err) throw err;
