@@ -17,6 +17,11 @@ const connectDB = async (operations, res) => {
             password: '8d2mpY4LvJ',
             database: 'sql10411211',
             port: '3306'
+            // host: 'localhost',
+            // user: 'root',
+            // password: 'root',
+            // database: 'id11191910_himnos',
+            // port: '8889'
         });
         connection.connect((err) => {
             if (err) throw err;
@@ -35,7 +40,7 @@ const connectDB = async (operations, res) => {
     }
 }
 
-app.get('/api/himnos', async (req,res) => {
+app.get('/api/himnos', async (req, res) => {
     connectDB( async(connection) => {
         connection.query("SELECT * FROM Himno", function (err, result) {
             if (err) throw err;
@@ -45,7 +50,7 @@ app.get('/api/himnos', async (req,res) => {
     }, res);
 });
 
-app.get('/api/buscartitulos', async (req,res) => {
+app.get('/api/buscartitulos', async (req, res) => {
     connectDB( async(connection) => {
         connection.query("SELECT * FROM Himno WHERE Titulo like '%" + req.query.term + "%'", function (err, result) {
             if (err) throw err;
@@ -55,7 +60,17 @@ app.get('/api/buscartitulos', async (req,res) => {
     }, res);
 });
 
-app.get('/api/obtenerestrofas', async (req,res) => {
+app.get('/api/buscartitulo', async (req, res) => {
+    connectDB( async(connection) => {
+        connection.query("SELECT * FROM Himno WHERE Titulo = '" + req.query.term + "'", function (err, result) {
+            if (err) throw err;
+            res.status(200).json(result);
+        });
+            
+    }, res);
+});
+
+app.get('/api/obtenerestrofas', async (req, res) => {
     connectDB( async(connection) => {
         connection.query("SELECT * FROM Estrofa WHERE Himno_Id ='" + req.query.id + "'", function (err, result) {
             if (err) throw err;
@@ -65,7 +80,7 @@ app.get('/api/obtenerestrofas', async (req,res) => {
     }, res);
 });
 
-app.get('/api/buscarenestrofas', async (req,res) => {
+app.get('/api/buscarenestrofas', async (req, res) => {
     connectDB( async(connection) => {
         connection.query("SELECT Himno_Id FROM Estrofa WHERE Contenido like '%" + req.query.term + "%'", function (err, result) {
             if (err) throw err;
@@ -76,9 +91,86 @@ app.get('/api/buscarenestrofas', async (req,res) => {
     }, res);
 });
 
-app.get('/api/buscarencontenido', async (req,res) => {
+app.get('/api/buscarencontenido', async (req, res) => {
     connectDB( async(connection) => {
         connection.query("SELECT * FROM Himno WHERE Titulo like '%" + req.query.term + "%' OR Id IN (" + req.query.array + ")", function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            res.status(200).json(result);
+        });
+            
+    }, res);
+});
+
+app.post('/api/actualizartitulo', async (req, res) => {
+    connectDB( async(connection) => {
+        connection.query("UPDATE Himno SET Titulo = '" + req.body.titulo + "', Cantidad_estrofas = " + req.body.cantidad + " WHERE Id =" + req.body.id, function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            res.status(200).json(result);
+        });
+            
+    }, res);
+});
+
+app.post('/api/actualizarestrofa', async (req, res) => {
+    connectDB( async(connection) => {
+        connection.query("UPDATE Estrofa SET Contenido = '" + req.body.contenido + "' WHERE Himno_id =" + req.body.id + " AND Numero_estrofa =" + req.body.numero, function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            res.status(200).json(result);
+        });
+            
+    }, res);
+});
+
+app.post('/api/insertarestrofa', async (req, res) => {
+    connectDB( async(connection) => {
+        connection.query("INSERT INTO Estrofa (Himno_Id, Numero_estrofa, Contenido) VALUES(" + req.body.id + ", " + req.body.numero+ ", '" + req.body.contenido + "')", function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            res.status(200).json(result);
+        });
+            
+    }, res);
+});
+
+app.post('/api/insertarhimno', async (req, res) => {
+    connectDB( async(connection) => {
+        connection.query("INSERT INTO Himno (Id, Titulo, Cantidad_estrofas) VALUES(Null, '" + req.body.titulo + "', " + req.body.cantidad + ")", function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            res.status(200).json(result);
+        });
+            
+    }, res);
+});
+
+app.delete('/api/borrarestrofa', async (req, res) => {
+    connectDB( async(connection) => {
+        connection.query("DELETE FROM Estrofa WHERE Himno_id = " + req.query.id + " AND Numero_estrofa = " + req.query.cantidad, function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            res.status(200).json(result);
+        });
+            
+    }, res);
+});
+
+app.delete('/api/borrartodasestrofas', async (req, res) => {
+    connectDB( async(connection) => {
+        connection.query("DELETE FROM Estrofa WHERE Himno_id = " + req.query.id, function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            res.status(200).json(result);
+        });
+            
+    }, res);
+});
+
+app.delete('/api/borrarhimno', async (req, res) => {
+    connectDB( async(connection) => {
+        connection.query("DELETE FROM Himno WHERE Id = " + req.query.id, function (err, result) {
             if (err) throw err;
             console.log(result);
             res.status(200).json(result);
