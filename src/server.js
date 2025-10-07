@@ -12,10 +12,10 @@ const connectDB = async (operations, res) => {
     try {
         const mysql = require('mysql');
         const connection = mysql.createConnection({
-            host: 'sql10.freemysqlhosting.net',
-            user: 'sql10411211',
-            password: '8d2mpY4LvJ',
-            database: 'sql10411211',
+            host: 'tommy.heliohost.org',
+            user: 'robertogatgens_user',
+            password: 'bR1S4delM@r',
+            database: 'robertogatgens_himnos',
             port: '3306'
             // host: 'localhost',
             // user: 'root',
